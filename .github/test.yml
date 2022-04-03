@@ -1,0 +1,16 @@
+name: PR commits
+on: pull_request
+jobs:
+  one:
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ github.event.pull_request.commits_url }}
+        run: echo "$GITHUB_CONTEXT"
+      - run: curl -o out.json ${{ github.event.pull_request.commits_url }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: commits
+          path: out.json
