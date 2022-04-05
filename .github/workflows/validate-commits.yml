@@ -1,7 +1,7 @@
-name: PR commits
+name: Validate PR commit messages
 on: pull_request
 jobs:
-  one:
+  validate-commits:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
