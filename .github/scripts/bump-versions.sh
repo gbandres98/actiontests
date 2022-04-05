@@ -10,8 +10,6 @@ for commit in $(git rev-list --reverse $before..$after); do
     commit_msg=$(git log -1 --pretty=format:"%s")
     changes=$(git diff --name-only HEAD^ HEAD)
 
-    echo $commit_msg
-
     for version_file in "${version_files[@]}"; do
         version_file_dir=$(dirname $version_file)
         version_change_file=$version_file_dir/version_changelog
@@ -53,9 +51,10 @@ for version_file in "${version_files[@]}"; do
     version_change=$(cat $version_change_file)
     IFS=. eval 'read -ra sem_values <<< "$version"'
 
+    echo "=============================="
     echo $version_file
-    echo $version
-    echo $version_change
+    echo "Previous version: "$version
+    echo "Change type: "$version_change
 
     if [[ $version_change == "MAJOR" ]]; then
         (( sem_values[0]++ ))
@@ -75,7 +74,7 @@ for version_file in "${version_files[@]}"; do
     printf -v version '%s.' "${sem_values[@]}"
     version=$(sed 's/\.$//' <<< $version)
 
-    echo $version
+    echo "New version: "$version
     echo $version > $version_file
 
     git add $version_file
