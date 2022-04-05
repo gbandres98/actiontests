@@ -4,13 +4,12 @@ jobs:
   one:
     runs-on: ubuntu-latest
     steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ github.event.pull_request.commits_url }}
-        run: echo "$GITHUB_CONTEXT"
-      - run: curl -o out.json ${{ github.event.pull_request.commits_url }}
-      - name: Upload artifact
-        uses: actions/upload-artifact@v1.0.0
-        with:
-          name: commits
-          path: out.json
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: sudo apt install -y jq
+      - name: Get PR commits
+        run: curl -o commits.json ${{ github.event.pull_request.commits_url }}
+      - name: Validate commits
+        run: |
+          $GITHUB_WORKSPACE/.github/scripts/validate-commits.sh
